@@ -9,5 +9,6 @@ export interface Yad2Listing {
     model?: { textEng: string };
     manufacturer: { textEng: string };
     metaData: { coverImage: string };
+    km: number;
     // We'll keep it minimal as requested - more fields can be added later
   }
