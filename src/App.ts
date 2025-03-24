@@ -79,14 +79,9 @@ export class App {
         try {
             console.log('Checking for new listings...');
 
-            try {
-                // Fetch current listings
-                const listings = await this.yad2Fetcher.fetchListings();
-                console.log(`Found ${listings.length} listings`);
-            }
-            catch (e) {
-                this.telegramBot.sendMessage("Error fetching yad 2");
-            }
+            // Fetch current listings
+            const listings = await this.yad2Fetcher.fetchListings();
+            console.log(`Found ${listings.length} listings`);
 
             // Process each listing
             for (const listing of listings) {
@@ -103,6 +98,7 @@ export class App {
             console.log('Finished checking for new listings');
         } catch (error) {
             console.error('Error checking for new listings:', error);
+            this.telegramBot.sendMessage("Error fetching yad 2");
         }
     }
 }
