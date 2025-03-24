@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
-import { Yad2Listing, Yad2Response } from '../types/Yad2Types';
+import { Yad2Listing } from '../types/Yad2Listing';
+import { Yad2Response } from '../types/Yad2Response';
 
 export class Yad2Fetcher {
   private baseUrl: string;
@@ -38,7 +39,7 @@ export class Yad2Fetcher {
       return this.extractListings(response.data);
     } catch (error) {
       console.error('Error fetching data from Yad2:', error);
-      return [];
+      throw error;
     }
   }
 
