@@ -51,6 +51,15 @@ export class App {
         }, this.pollingInterval);
 
         console.log(`Monitoring service started. Checking every ${this.pollingInterval / 1000} seconds.`);
+
+        const shutdownTime = this.pollingInterval * 6;
+        console.log(`Monitoring service started. Will run for ${shutdownTime/1000} seconds (${shutdownTime/this.pollingInterval} polling cycles).`);
+        
+        setTimeout(async () => {
+            console.log(`Scheduled shutdown time reached (${shutdownTime/1000} seconds), shutting down...`);
+            await this.shutdown();
+            process.exit(0);
+        }, shutdownTime);
     }
 
     /**
