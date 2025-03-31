@@ -15,10 +15,11 @@ export class App {
         telegramToken: string,
         telegramChatId: string,
         searchParams: Record<string, string>,
-        pollingInterval: number = 120000
+        pollingInterval: number = 120000,
+        yad2BaseUrl: string
     ) {
         this.mongoManager = new MongoManager(mongoUri);
-        this.yad2Fetcher = new Yad2Fetcher(undefined, searchParams);
+        this.yad2Fetcher = new Yad2Fetcher(yad2BaseUrl, searchParams);
         this.telegramBot = new TelegramBot(telegramToken, telegramChatId);
         this.pollingInterval = pollingInterval;
     }
