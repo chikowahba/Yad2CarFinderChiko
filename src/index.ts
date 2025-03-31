@@ -23,11 +23,12 @@ const {
   YAD2_GEAR_BOX,
   YAD2_PRICE_ONLY,
   YAD2_IMG_ONLY,
-  YAD2_OWNER_ID
+  YAD2_OWNER_ID,
+  YAD2_BASE_URL
 } = process.env;
 
 // Validate required environment variables
-if (!MONGODB_URI || !TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+if (!MONGODB_URI || !TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID || !YAD2_BASE_URL) {
   console.error('Missing required environment variables. Please check your .env file');
   process.exit(1);
 }
@@ -55,7 +56,8 @@ const app = new App(
   TELEGRAM_BOT_TOKEN,
   TELEGRAM_CHAT_ID,
   searchParams,
-  parseInt(POLLING_INTERVAL_MS || '120000')
+  parseInt(POLLING_INTERVAL_MS || '120000'),
+  YAD2_BASE_URL
 );
 
 // Handle graceful shutdown
