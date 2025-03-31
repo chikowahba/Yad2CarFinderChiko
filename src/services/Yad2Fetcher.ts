@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { Yad2Listing } from '../types/Yad2Listing';
 import { Yad2Response } from '../types/Yad2Response';
-import { HttpsProxyAgent } from 'https-proxy-agent';
 
 export class Yad2Fetcher {
   private baseUrl: string;
@@ -464,21 +463,6 @@ export class Yad2Fetcher {
     } catch (error) {
       console.error('Error fetching data from Yad2:', error);
       throw error;
-    }
-  }
-
-  private createProxyAgent(proxyUrl: string) {
-    try {
-      // Ensure the proxy URL has the correct format
-      // HTTP proxy URLs must start with http:// or https://
-      // Make sure URL starts with http:// or https://
-      if (!proxyUrl.startsWith('http://') && !proxyUrl.startsWith('https://')) {
-        proxyUrl = 'http://' + proxyUrl;
-      }
-      return new HttpsProxyAgent(proxyUrl);
-    } catch (error) {
-      console.error(`Error creating proxy agent for ${proxyUrl}:`, error);
-      return null;
     }
   }
 
