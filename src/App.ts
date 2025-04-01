@@ -58,7 +58,7 @@ export class App {
         setTimeout(async () => {
             console.log(`Scheduled shutdown time reached (${shutdownTime/1000} seconds), shutting down...`);
             await this.shutdown();
-            process.exit(0);
+            process.exit(1);
         }, shutdownTime);
     }
 
