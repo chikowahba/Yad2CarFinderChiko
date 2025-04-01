@@ -64,7 +64,7 @@ const app = new App(
 const handleShutdown = async () => {
   console.log('Received shutdown signal');
   await app.shutdown();
-  process.exit(0);
+  process.exit(1);
 };
 
 // Set up signal handlers
