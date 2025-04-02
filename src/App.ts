@@ -7,21 +7,17 @@ export class App {
     private mongoManager: MongoManager;
     private yad2Fetcher: Yad2Fetcher;
     private telegramBot: TelegramBot;
-    private pollingInterval: number;
-    private intervalId?: NodeJS.Timeout;
 
     constructor(
         mongoUri: string,
         telegramToken: string,
         telegramChatId: string,
         searchParams: Record<string, string>,
-        pollingInterval: number = 120000,
         yad2BaseUrl: string
     ) {
         this.mongoManager = new MongoManager(mongoUri);
         this.yad2Fetcher = new Yad2Fetcher(yad2BaseUrl, searchParams);
         this.telegramBot = new TelegramBot(telegramToken, telegramChatId);
-        this.pollingInterval = pollingInterval;
     }
 
     /**
@@ -38,38 +34,24 @@ export class App {
     }
 
     /**
-     * Start monitoring Yad2
+     * Run a single check of Yad2 listings
      */
-    public start(): void {
-        console.log('Starting Yad2 monitoring service...');
-
-        // Run immediately and then set interval
-        this.checkForNewListings();
-
-        this.intervalId = setInterval(() => {
-            this.checkForNewListings();
-        }, this.pollingInterval);
-
-        console.log(`Monitoring service started. Checking every ${this.pollingInterval / 1000} seconds.`);
-
-        const shutdownTime = this.pollingInterval * 6;
-        console.log(`Monitoring service started. Will run for ${shutdownTime/1000} seconds (${shutdownTime/this.pollingInterval} polling cycles).`);
-        
-        setTimeout(async () => {
-            console.log(`Scheduled shutdown time reached (${shutdownTime/1000} seconds), shutting down...`);
+    public async run(): Promise<void> {
+        try {
+            console.log('Starting single Yad2 check...');
+            
+            // Run a single check
+            await this.checkForNewListings();
+            
+            // Shut down cleanly
+            await this.shutdown();
+            
+            console.log('Check completed successfully');
+        } catch (error) {
+            console.error('Error during Yad2 check:', error);
+            await this.telegramBot.sendMessage("Error checking Yad2");
             await this.shutdown();
             process.exit(1);
-        }, shutdownTime);
-    }
-
-    /**
-     * Stop monitoring Yad2
-     */
-    public stop(): void {
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-            this.intervalId = undefined;
-            console.log('Monitoring service stopped');
         }
     }
 
@@ -77,7 +59,6 @@ export class App {
      * Shutdown the application
      */
     public async shutdown(): Promise<void> {
-        this.stop();
         await this.mongoManager.disconnect();
         console.log('App shutdown complete');
     }
@@ -108,7 +89,8 @@ export class App {
             console.log('Finished checking for new listings');
         } catch (error) {
             console.error('Error checking for new listings:', error);
-            this.telegramBot.sendMessage("Error fetching yad 2");
+            await this.telegramBot.sendMessage("Error fetching yad 2");
+            throw error; // Rethrow to be caught by run()
         }
     }
 }
