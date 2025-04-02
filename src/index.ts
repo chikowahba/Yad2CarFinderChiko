@@ -10,7 +10,6 @@ const {
   MONGODB_URI,
   TELEGRAM_BOT_TOKEN,
   TELEGRAM_CHAT_ID,
-  POLLING_INTERVAL_MS,
   YAD2_MANUFACTURER,
   YAD2_MODEL,
   YAD2_YEAR,
@@ -50,13 +49,13 @@ const searchParams: Record<string, string> = {
   ownerID: YAD2_OWNER_ID!
 };
 
-// Create app instance
+// Create app instance with the necessary parameters
+// Removed the polling interval as it's not needed for cron job approach
 const app = new App(
   MONGODB_URI,
   TELEGRAM_BOT_TOKEN,
   TELEGRAM_CHAT_ID,
   searchParams,
-  parseInt(POLLING_INTERVAL_MS || '120000'),
   YAD2_BASE_URL
 );
 
@@ -64,20 +63,26 @@ const app = new App(
 const handleShutdown = async () => {
   console.log('Received shutdown signal');
   await app.shutdown();
-  process.exit(1);
+  process.exit(0);
 };
 
 // Set up signal handlers
 process.on('SIGINT', handleShutdown);
 process.on('SIGTERM', handleShutdown);
 
-// Start the application
+// Run the application once and exit
 (async () => {
   try {
+    console.log('Starting Yad2 check (cron job mode)...');
     await app.init();
-    app.start();
+    
+    // Run a single check instead of starting the interval polling
+    await app.run();
+    
+    console.log('Yad2 check completed successfully');
+    process.exit(0);
   } catch (error) {
-    console.error('Failed to start application:', error);
+    console.error('Failed to run application:', error);
     process.exit(1);
   }
 })();
