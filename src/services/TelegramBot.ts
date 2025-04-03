@@ -20,8 +20,9 @@ export class TelegramBot {
                 `Link: https://www.yad2.co.il/vehicles/item/${listing.token}\n` +
                 `${listing.manufacturer?.textEng || "Unknown Manufacturer"} ${listing.model?.textEng || "Unknown model"} ${listing.vehicleDates?.yearOfProduction || "Unknown year"}\n` +
                 `Hand: ${listing.hand?.text || "Unknown"} ${listing.owner?.text || "Unknown"} ${listing.previousOwner ? listing.previousOwner.text : ''}\n` +
-                `Kilometer: ${listing.km}\n` + 
+                `Kilometer: ${listing.km}` + 
                 `Price: ${listing.price || 'N/A'} ₪\n` +
+                `City: ${listing.address?.city?.text || "Unknown"}\n` +
                 `Phone: ${listing.customer?.phone || 'N/A'} ${listing.customer?.name}\n`;
 
             if (listing.metaData?.coverImage) {
