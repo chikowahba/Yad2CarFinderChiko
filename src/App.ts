@@ -75,17 +75,20 @@ export class App {
             console.log(`Found ${listings.length} listings`);
 
             // Process each listing
+            let newListingsCount = 0;
             for (const listing of listings) {
                 const exists = await this.mongoManager.tokenExists(listing.token);
 
                 if (!exists) {
                     // New listing found - save to database and send alert
+                    console.log(`NEW LISTING FOUND with token: ${listing.token}`);
                     await this.mongoManager.saveToken(listing.token);
                     await this.telegramBot.sendAlert(listing);
-                    console.log(`New listing found with token: ${listing.token}`);
+                    newListingsCount++;
                 }
             }
 
+            console.log(`Found ${newListingsCount} new listings out of ${listings.length} total`);
             console.log('Finished checking for new listings');
         } catch (error) {
             console.error('Error checking for new listings:', error);
