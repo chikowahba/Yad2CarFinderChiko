@@ -26,7 +26,7 @@ export class TelegramBot {
                 `Phone: ${listing.customer?.phone || 'N/A'} ${listing.customer?.name}\n`;
 
             if (listing.metaData?.coverImage) {
-                await this.bot.sendPhoto(this.chatId, listing.metaData!.coverImage, { caption: message },)
+                await this.bot.sendPhoto(this.chatId, listing.metaData!.coverImage, { caption: message });
             }
             else {
                 await this.bot.sendMessage(this.chatId, message);
